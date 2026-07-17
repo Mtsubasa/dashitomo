@@ -1,0 +1,11 @@
+{
+  "name": "dashitomo-tooling",
+  "private": true,
+  "packageManager": "pnpm@11.10.0",
+  "scripts": {
+    "openapi:lint": "redocly lint docs/api/openapi.yaml"
+  },
+  "devDependencies": {
+    "@redocly/cli": "2.39.0"
+  }
+}
