@@ -103,7 +103,7 @@ depends = ["test:app", "test:api"]
 [tasks."build:web"]
 description = "Build the Flutter Web application"
 dir = "apps/app"
-run = "flutter build web --release --dart-define=APP_ENV=production"
+run = "flutter build web --release --dart-define=APP_ENV=local --dart-define=API_BASE_URL=http://localhost:8080"
 
 [tasks.check]
 description = "Generate, format, lint, test, and build the project"

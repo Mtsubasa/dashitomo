@@ -156,9 +156,7 @@ mise run build:web
 
 成果物は`apps/app/build/web`に生成されます。
 
-現在の本番用Webビルドは`API_BASE_URL`を指定していないため、初期値の`http://localhost:8080`が埋め込まれます。
-
-デプロイ先のAPI URLはVercel検証時に決定します。
+`build:web`は、ローカルAPIへ接続する動作確認用のリリース構成ビルドです。本番用のビルドタスクは、デプロイ先のAPI URLが確定した時点で追加します。
 
 ### Android
 
