@@ -1,0 +1,37 @@
+openapi: 3.1.0
+
+info:
+  title: だしトモ API
+  version: 0.1.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local
+
+paths:
+  /healthz:
+    get:
+      operationId: getHealth
+      summary: ヘルスチェック
+      description: APIの稼働状態を返す。
+      security: []
+      responses:
+        "200":
+          description: 正常稼働中
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - ok
