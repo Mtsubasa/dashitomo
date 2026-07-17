@@ -47,9 +47,11 @@ class HealthScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 FilledButton.icon(
                   key: const Key('health-retry'),
-                  onPressed: () {
-                    ref.read(healthViewModelProvider.notifier).retry();
-                  },
+                  onPressed: health.isLoading
+                      ? null
+                      : () {
+                          ref.read(healthViewModelProvider.notifier).retry();
+                        },
                   icon: const Icon(Icons.refresh),
                   label: const Text('再試行'),
                 ),

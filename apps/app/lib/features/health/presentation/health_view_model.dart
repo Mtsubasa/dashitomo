@@ -12,10 +12,7 @@ class HealthViewModel extends AsyncNotifier<HealthResponse> {
     return ref.watch(healthRepositoryProvider).getHealth();
   }
 
-  Future<void> retry() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(
-      () => ref.read(healthRepositoryProvider).getHealth(),
-    );
+  void retry() {
+    ref.invalidateSelf();
   }
 }

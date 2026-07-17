@@ -34,6 +34,24 @@ void main() {
     expect(find.text('Go API 接続成功: ok'), findsOneWidget);
   });
 
+  testWidgets('disables retry while loading', (tester) async {
+    final completer = Completer<HealthResponse>();
+    await tester.pumpWidget(
+      _testApp(
+        config: config,
+        repository: FakeHealthRepository(() => completer.future),
+      ),
+    );
+
+    final retryButton = tester.widget<FilledButton>(
+      find.byKey(const Key('health-retry')),
+    );
+    expect(retryButton.onPressed, isNull);
+
+    completer.complete(const HealthResponse(status: 'ok'));
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('shows a generic error without leaking details', (tester) async {
     await tester.pumpWidget(
       _testApp(
