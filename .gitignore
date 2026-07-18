@@ -1,0 +1,43 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Operating systems and editors
+.DS_Store
+.idea/
+*.iml
+.vscode/
+
+# Flutter and Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+coverage/
+
+# Android
+.gradle/
+local.properties
+**/android/key.properties
+*.jks
+*.keystore
+
+# iOS
+**/ios/Flutter/ephemeral/
+**/ios/Pods/
+**/DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Go
+*.test
+*.out
+coverage.out
+
+# Node.js and Vercel
+node_modules/
+.vercel/
+*.log

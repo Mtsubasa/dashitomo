@@ -1,0 +1,9 @@
+extends:
+  - recommended
+
+rules:
+  # ライセンス未定
+  info-license: off
+  # ローカル開発用サーバーのみ
+  no-server-example.com: off
+  operation-4xx-response: off

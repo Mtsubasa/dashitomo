@@ -1,0 +1,115 @@
+min_version = "2026.7.6"
+
+[tools]
+flutter = "3.44.1"
+go = "1.25.12"
+node = "24.18.0"
+"npm:pnpm" = "11.10.0"
+
+[tasks."setup:app"]
+description = "Install Flutter dependencies"
+dir = "apps/app"
+run = "flutter pub get"
+
+[tasks."setup:api"]
+description = "Download Go modules"
+dir = "apps/api"
+run = "go mod download"
+
+[tasks."setup:tooling"]
+description = "Install repository tooling dependencies"
+run = "pnpm install --frozen-lockfile"
+
+[tasks.setup]
+description = "Install project dependencies"
+depends = ["setup:app", "setup:api", "setup:tooling"]
+
+[tasks.doctor]
+description = "Show development environment diagnostics"
+run = [
+  "mise --version",
+  "flutter --version",
+  "dart --version",
+  "go version",
+  "node --version",
+  "pnpm --version",
+  "flutter doctor -v",
+]
+
+[tasks."dev:api"]
+description = "Run the Go API"
+dir = "apps/api"
+run = "go run ./cmd/api"
+
+[tasks."dev:app"]
+description = "Run the Flutter Web application"
+dir = "apps/app"
+run = "flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3000 --dart-define=APP_ENV=local --dart-define=API_BASE_URL=http://localhost:8080"
+
+[tasks.generate]
+description = "Generate Flutter source files"
+dir = "apps/app"
+run = "dart run build_runner build"
+
+[tasks."format:app"]
+description = "Format Dart source files"
+dir = "apps/app"
+run = "dart format lib test"
+
+[tasks."format:api"]
+description = "Format Go source files"
+dir = "apps/api"
+run = "go fmt ./..."
+
+[tasks.format]
+description = "Format project source files"
+depends = ["format:app", "format:api"]
+
+[tasks."lint:app"]
+description = "Analyze the Flutter application"
+dir = "apps/app"
+run = "flutter analyze"
+
+[tasks."lint:api"]
+description = "Analyze the Go API"
+dir = "apps/api"
+run = [
+  "go vet ./...",
+  "go tool govulncheck ./...",
+]
+
+[tasks."lint:openapi"]
+description = "Lint the OpenAPI definition"
+run = "pnpm run openapi:lint"
+
+[tasks.lint]
+description = "Lint the project"
+depends = ["lint:app", "lint:api", "lint:openapi"]
+
+[tasks."test:app"]
+description = "Test the Flutter application"
+dir = "apps/app"
+run = "flutter test"
+
+[tasks."test:api"]
+description = "Test the Go API"
+dir = "apps/api"
+run = "go test ./..."
+
+[tasks.test]
+description = "Test the project"
+depends = ["test:app", "test:api"]
+
+[tasks."build:web"]
+description = "Build the Flutter Web application"
+dir = "apps/app"
+run = "flutter build web --release --dart-define=APP_ENV=local --dart-define=API_BASE_URL=http://localhost:8080"
+
+[tasks.check]
+description = "Generate, format, lint, test, and build the project"
+run = [
+  { task = "generate" },
+  { task = "format" },
+  { tasks = ["lint", "test"] },
+  { task = "build:web" },
+]
