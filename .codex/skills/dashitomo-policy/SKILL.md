@@ -14,6 +14,7 @@ description: >-
 - 詳細: [docs/development-policy.md](../../../docs/development-policy.md)
 - エージェント制約: [AGENTS.md](../../../AGENTS.md)
 - セットアップ: [README.md](../../../README.md)
+- レスポンシブUI: [docs/ui/responsive-layout.md](../../../docs/ui/responsive-layout.md)
 
 ## 必ず守ること
 
@@ -26,6 +27,7 @@ description: >-
 7. **Go**: 標準ライブラリ中心。内部エラーを HTTP に漏らさない
 8. **Git**: `develop` から作業ブランチ。`main` 直接 push 禁止（明示依頼時のみ push/PR）。Conventional Commits・日本語要約。マージは Merge Commit
 9. **未確定値**: デプロイ先・認証方式など推測で埋めない。不明ならユーザーに確認
+10. **コメント**: 処理の実況や決定ログではなく、理由・制約・単位・座標系・不変条件などコードだけでは分からない情報を書く。実装とずれたコメントは同時に更新または削除する
 
 ## Flutter アーキテクチャ（MVVM）
 
@@ -76,6 +78,7 @@ View → ViewModel → Repository → Service → ApiClient（core）
 - View は原則として機能の ViewModel Provider を watch / read する。テーマ、設定、router など `core` / `app` の表示用 Provider は View から直接参照してよい
 - 初回取得は `AsyncNotifier.build`、再取得は invalidate、ユーザー操作による更新は ViewModel のメソッドに置く。非同期更新中は二重送信を防ぎ、失敗を View が表示できる状態にする
 - Dio 例外を View へそのまま表示しない。Service / Repository でアプリが扱う失敗へ変換し、ユーザー向け文言の決定は presentation 側で行う
+- UIは端末種別で分岐せず、`SafeArea`と`LayoutBuilder`の制約を基準にする。アセットへの重ね要素は同じ親Widget内で割合配置する
 
 ### 追加時チェック
 

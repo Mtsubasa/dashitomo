@@ -95,6 +95,8 @@ mise 経由の Flutter が安定して動作しない場合は、Windows ネイ�
 
 ## 4. Flutter の技術選定
 
+画面サイズ、縦横比、Safe Areaの差へ対応するUI設計は[`docs/ui/responsive-layout.md`](ui/responsive-layout.md)を正とする。
+
 | 領域 | 選定 |
 | --- | --- |
 | アーキテクチャ | MVVM に近いレイヤー構成 |
