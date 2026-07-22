@@ -31,6 +31,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(MaterialApp), findsOneWidget);
-    expect(find.text('だしトモ'), findsOneWidget);
+    expect(find.text('かつ男'), findsOneWidget);
   });
 }
