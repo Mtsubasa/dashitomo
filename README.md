@@ -9,7 +9,11 @@
 - Android
 - iOS
 
-Flutter Webは開発時の動作確認用として使用します。
+Flutter Webは開発時の動作確認用として使用します。デスクトップアプリは対象外です。
+
+開発環境はmacOS、Linux、Windows + WSL2を想定しています。WindowsではFlutter WebとGoをWSL2上で、Android Studio・SDK・エミュレータとAndroidビルドはWindowsネイティブで行い、Android確認用にWSL2とは別パスへcloneします。iOSはmacOSでビルド・Simulator確認します。
+
+実装方針の詳細は[docs/development-policy.md](docs/development-policy.md)を参照してください。Claude Codeは[CLAUDE.md](CLAUDE.md)、スキルは[`.claude/skills/dashitomo-policy`](.claude/skills/dashitomo-policy/SKILL.md)と[`.codex/skills/dashitomo-policy`](.codex/skills/dashitomo-policy/SKILL.md)にあります。
 
 ## リポジトリ構成
 
@@ -57,6 +61,8 @@ mise install
 - Go 1.25.12
 - Node.js 24.18.0
 - pnpm 11.10.0
+
+Dart SDKはFlutterに同梱のものを使い、FVMは使いません。バージョンは`latest`指定せず`mise.toml`で固定します。
 
 ### 4. 依存関係の取得
 
@@ -168,7 +174,7 @@ TODO
 
 ## 開発フロー
 
-`main`は安定した変更を置くブランチ、`develop`は通常開発の統合先です。
+`main`は本番・発表可能な安定版、`develop`は通常開発の統合先です。機能ブランチは`develop`へPull Requestし、リリース時は`develop`から`main`へPull Requestします。マージ方式はMerge Commitです。
 
 通常の作業ブランチは最新の`develop`から作成します。
 
@@ -178,7 +184,7 @@ git pull --ff-only
 git switch -c [branch-name]
 ```
 
-ブランチ名には`feature/`、`fix/`、`chore/`、`docs/`、`test/`、`ci/`などを使います。
+ブランチ名には`feature/`、`fix/`、`refactor/`、`chore/`、`docs/`、`test/`、`ci/`などを使います。
 
 コミットは[Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/)に沿い、日本語で要約してください。
 
@@ -188,7 +194,9 @@ fix: API接続失敗時の再試行を修正
 docs: 開発手順の更新
 ```
 
-APIを変更するときは、OpenAPI、Go Handlerとテスト、Flutter Model・Service・テストを同じPull Requestで揃えます。
+公開API契約を変更するときは、OpenAPIとGo Handler・テストを同じPull Requestで揃えます。Flutterが利用するAPIの場合は、Flutter Model・Service・テストも同じPull Requestで更新します。
 APIに関しては[`docs/api/openapi.yaml`](docs/api/openapi.yaml)を正とします。
 
 コーディングエージェント向けの制約は[`AGENTS.md`](AGENTS.md)にまとめています。
+
+`main`と`develop`では、直接pushの禁止・Pull Request必須・レビューApprove・CI成功・Force Push禁止などのBranch Protection（またはRuleset）を設定する想定です。詳細は[docs/development-policy.md](docs/development-policy.md)を参照してください。
