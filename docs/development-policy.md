@@ -16,7 +16,10 @@
 │   ├── app/          # Flutter
 │   └── api/          # Go API
 ├── docs/
-│   └── api/          # OpenAPI（API の正）
+│   ├── adr/          # 設計判断
+│   ├── api/          # OpenAPI（APIの正）
+│   └── database/     # DB設計
+├── supabase/         # PostgreSQL migrationとDBテスト
 ├── mise.toml
 └── package.json
 ```
