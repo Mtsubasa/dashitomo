@@ -48,6 +48,18 @@ void main() {
     expect(menu.width, greaterThanOrEqualTo(48));
     expect(menu.height, greaterThanOrEqualTo(48));
   });
+
+  testWidgets('カメラボタンを操作可能なカーソルとツールチップで表示する', (tester) async {
+    await _pumpHome(tester, size: const Size(402, 755));
+
+    final cameraButton = tester.widget<InkWell>(
+      find.byKey(const ValueKey('home-camera-button')),
+    );
+
+    expect(cameraButton.mouseCursor, SystemMouseCursors.click);
+    expect(cameraButton.onTap, isNotNull);
+    expect(find.byTooltip('カメラ'), findsOneWidget);
+  });
 }
 
 Future<void> _pumpHome(

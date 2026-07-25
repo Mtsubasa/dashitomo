@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'home_layout.dart';
 import 'home_view_model.dart';
@@ -470,57 +471,70 @@ class _CameraButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: HomeLayout.cameraOrangeSize,
-        height: HomeLayout.cameraOrangeSize,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFFFC64B), Color(0xFFF6A623)],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+    return Tooltip(
+      message: HomeLayout.cameraLabel,
+      child: Material(
+        type: MaterialType.transparency,
+        child: Ink(
+          width: HomeLayout.cameraOrangeSize,
+          height: HomeLayout.cameraOrangeSize,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFFFC64B), Color(0xFFF6A623)],
             ),
-          ],
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            const Icon(
-              Icons.camera_alt,
-              color: Colors.white,
-              size: HomeLayout.cameraIconSize,
-            ),
-            Container(
-              width: HomeLayout.cameraLensSize,
-              height: HomeLayout.cameraLensSize,
-              padding: const EdgeInsets.all(HomeLayout.cameraLensYellowWidth),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: HomeLayout.cameraLensYellowColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-              child: Container(
-                padding: const EdgeInsets.all(HomeLayout.cameraLensWhiteWidth),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
+            ],
+          ),
+          child: InkWell(
+            key: const ValueKey('home-camera-button'),
+            customBorder: const CircleBorder(),
+            mouseCursor: SystemMouseCursors.click,
+            onTap: () => context.push('/camera'),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                const Icon(
+                  Icons.camera_alt,
                   color: Colors.white,
+                  size: HomeLayout.cameraIconSize,
                 ),
-                child: const DecoratedBox(
-                  decoration: BoxDecoration(
+                Container(
+                  width: HomeLayout.cameraLensSize,
+                  height: HomeLayout.cameraLensSize,
+                  padding: const EdgeInsets.all(
+                    HomeLayout.cameraLensYellowWidth,
+                  ),
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: HomeLayout.cameraLensColor,
+                    color: HomeLayout.cameraLensYellowColor,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(
+                      HomeLayout.cameraLensWhiteWidth,
+                    ),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: const DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: HomeLayout.cameraLensColor,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
