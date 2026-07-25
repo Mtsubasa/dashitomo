@@ -6,6 +6,7 @@
 
 - セットアップ・起動: [README.md](README.md)
 - 実装方針（環境・Git・技術選定）: [docs/development-policy.md](docs/development-policy.md)
+- デプロイ手順（Vercel）: [docs/deployment.md](docs/deployment.md)
 - エージェント向け制約: [AGENTS.md](AGENTS.md)
 
 ## 作業の前提
