@@ -24,10 +24,15 @@ void main() {
       final bottom = tester.getRect(
         find.byKey(const ValueKey('home-bottom-navigation')),
       );
+      final menu = tester.getRect(
+        find.byKey(const ValueKey('home-menu-button')),
+      );
 
       expect(top.bottom, lessThanOrEqualTo(pet.top));
       expect(pet.bottom, lessThanOrEqualTo(bottom.top));
       expect(bottom.bottom, lessThanOrEqualTo(size.height));
+      expect(menu.width, greaterThanOrEqualTo(47.99));
+      expect(menu.height, greaterThanOrEqualTo(47.99));
     });
   }
 
