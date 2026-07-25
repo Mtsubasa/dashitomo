@@ -6,6 +6,7 @@
     "openapi:lint": "redocly lint docs/api/openapi.yaml"
   },
   "devDependencies": {
-    "@redocly/cli": "2.39.0"
+    "@redocly/cli": "2.39.0",
+    "supabase": "2.109.1"
   }
 }
