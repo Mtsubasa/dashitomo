@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../app/app_bottom_navigation_layout.dart';
+
 /// ホーム画面の基準寸法と、アセット内の割合座標を定義する。
 ///
 /// 実際の表示寸法は[HomeLayoutMetrics]が親の制約から算出する。
@@ -11,8 +13,6 @@ abstract final class HomeLayout {
   static const line = Color(0xFF553A04);
   static const nameColor = Color(0xFF4E7A2F);
   static const expFill = Color(0xFF8BC34A);
-  static const tabBarColor = menuFill;
-  static const tabLabelColor = line;
 
   // ---- 全体 ------------------------------------------------------------
   /// 画像比較と比例計算に使うデザイン基準幅。
@@ -23,6 +23,7 @@ abstract final class HomeLayout {
 
   static const minimumScale = 0.78;
   static const maximumScale = 1.10;
+  static const minimumInteractiveExtent = 48.0;
 
   // ---- 左上メニューボタン ---------------------------------------------
   static const menuButtonSize = 58.0;
@@ -62,40 +63,8 @@ abstract final class HomeLayout {
     expBar: Rect.fromLTWH(0.421, 0.645, 0.512, 0.17),
   );
 
-  // ---- 下部タブバー ----------------------------------------------------
-  static const tabBarHeight = 108.0;
-  static const tabBarRadius = 30.0;
-
   /// 画面下端とタブバーの間隔。
   static const tabBarBottomGap = 58.0;
-
-  static const tabIconSize = 54.0;
-  static const tabLabelSize = 13.0;
-
-  /// アイコンとラベルの基準線を全タブで揃えるオフセット。
-  static const tabOuterItemOffset = 4.0;
-  static const tabInnerItemOffset = 4.0;
-  static const tabCenterItemOffset = 4.0;
-
-  // ---- 中央カメラ（バーと融合させる）----------------------------------
-  /// クリーム色の膨らみがバー上端から突き出す高さ。
-  static const cameraBumpProtrusion = 30.0;
-
-  /// クリーム色の膨らみ（カメラを囲う円）の半径。
-  static const cameraBumpRadius = 52.0;
-
-  /// オレンジ円の直径。
-  static const cameraOrangeSize = 96.0;
-
-  static const cameraIconSize = 62.0;
-  static const cameraLensSize = 28.0;
-  static const cameraLensYellowWidth = 2.0;
-  static const cameraLensWhiteWidth = 3.0;
-  static const cameraLensYellowColor = Color(0xFFFFC64B);
-  static const cameraLensColor = Color(0xFF8BC34A);
-
-  /// カメラのラベル。
-  static const cameraLabel = 'カメラ';
 }
 
 /// 親から与えられた領域を、デザイン基準幅に対するscaleへ変換する。
@@ -128,12 +97,19 @@ class HomeLayoutMetrics {
       HomeLayout.namePlateTopGap * scale + namePlateHeight;
 
   double get bottomNavigationHeight =>
-      (HomeLayout.tabBarHeight + HomeLayout.cameraBumpProtrusion) * scale;
+      (AppBottomNavigationLayout.barHeight +
+          AppBottomNavigationLayout.cameraBumpProtrusion) *
+      scale;
 
   double get bottomGap {
     final scaled = HomeLayout.tabBarBottomGap * scale;
     return math.min(scaled, availableSize.height * 0.08);
   }
+
+  double get menuScale => math.max(
+    scale,
+    HomeLayout.minimumInteractiveExtent / HomeLayout.menuButtonSize,
+  );
 
   double scaled(double value) => value * scale;
 }
