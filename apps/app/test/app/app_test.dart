@@ -34,7 +34,59 @@ void main() {
     expect(find.text('かつ男'), findsOneWidget);
   });
 
+  testWidgets('下部ナビゲーションから各画面へ遷移する', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(402, 755);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appConfigProvider.overrideWithValue(
+            AppConfig(
+              appEnv: 'test',
+              apiBaseUrl: Uri.parse('http://api.example.test'),
+            ),
+          ),
+          healthRepositoryProvider.overrideWithValue(
+            FakeHealthRepository(
+              () async => const HealthResponse(status: 'ok'),
+            ),
+          ),
+        ],
+        child: const DashitomoApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('図鑑'));
+    await tester.pumpAndSettle();
+    expect(find.text('🌱  かつお菜図鑑  🌱'), findsOneWidget);
+
+    await tester.tap(find.text('日記'));
+    await tester.pumpAndSettle();
+    expect(find.text('現在開発中です'), findsOneWidget);
+
+    await tester.tap(find.text('会話'));
+    await tester.pumpAndSettle();
+    expect(find.text('現在開発中です'), findsOneWidget);
+
+    await tester.tap(find.text('ガチャ'));
+    await tester.pumpAndSettle();
+    expect(find.text('現在開発中です'), findsOneWidget);
+  });
+
   testWidgets('ホームと撮影画面を往復できる', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(402, 755);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
