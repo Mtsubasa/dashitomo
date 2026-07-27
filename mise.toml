@@ -46,6 +46,46 @@ description = "Run the Flutter Web application"
 dir = "apps/app"
 run = "flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3000 --dart-define=APP_ENV=local --dart-define=API_BASE_URL=http://localhost:8080"
 
+[tasks."doctor:db"]
+description = "Show local database environment diagnostics"
+run = [
+  "docker version",
+  "pnpm exec supabase --version",
+]
+
+[tasks."db:start"]
+description = "Start local PostgreSQL and Supabase Auth"
+run = "pnpm exec supabase start --exclude postgrest"
+
+[tasks."db:status"]
+description = "Show the local Supabase stack status"
+run = "pnpm exec supabase status"
+
+[tasks."db:stop"]
+description = "Stop the local Supabase stack"
+run = "pnpm exec supabase stop"
+
+[tasks."db:reset"]
+description = "Recreate the local database from migrations"
+run = "pnpm exec supabase db reset --local"
+
+[tasks."lint:db"]
+description = "Lint the local database schema"
+run = "pnpm exec supabase db lint --local --level error"
+
+[tasks."test:db"]
+description = "Test the local database schema"
+run = "pnpm exec supabase test db --local"
+
+[tasks."check:db"]
+description = "Start, reset, lint, and test the local database"
+run = [
+  { task = "db:start" },
+  { task = "db:reset" },
+  { task = "lint:db" },
+  { task = "test:db" },
+]
+
 [tasks.generate]
 description = "Generate Flutter source files"
 dir = "apps/app"

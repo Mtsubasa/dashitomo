@@ -23,9 +23,11 @@ Flutter Webは開発時の動作確認用として使用します。デスクト
 │   ├── app/          # Flutterアプリ
 │   └── api/          # Go API
 ├── docs/
-│   └── api/          # OpenAPI定義
+│   ├── api/          # OpenAPI定義
+│   └── database/     # DB設計
+├── supabase/         # PostgreSQL migrationとDBテスト
 ├── mise.toml         # ツールと共通タスク
-└── package.json      # OpenAPI検証用ツール
+└── package.json      # OpenAPI・Supabase CLI
 ```
 
 ## セットアップ
@@ -82,6 +84,12 @@ mise run doctor
 
 `flutter doctor -v`は、対象外のプラットフォームや未導入のSDKを問題として表示する場合があります。開発するプラットフォームに必要な項目を確認してください。
 
+DBを扱う場合は、別途Docker互換runtimeが必要です。Docker本体はmiseで管理しません。各OSに合ったDocker環境を導入して起動した後、次のコマンドで確認します。
+
+```shell
+mise run doctor:db
+```
+
 ## 開発サーバーの起動
 
 Go APIとFlutter Webは別のターミナルで起動します。
@@ -106,6 +114,34 @@ mise run dev:app
 画面にアプリ名、実行環境、API URL、Go APIの接続状態が表示されます。
 画面に『Go API接続成功: ok』が表示されれば環境構築は完了です
 
+## ローカルDB
+
+ローカル開発にはSupabase CLIで起動するPostgreSQLを使います。Supabase CLIは`package.json`と`pnpm-lock.yaml`で固定され、`mise run setup`で導入されます。
+
+Dockerを起動した状態で、ローカルPostgreSQLとSupabase Authを開始します。アプリで使わないStorage、Realtime、Analyticsなどのserviceは起動しません。
+
+```shell
+mise run db:start
+```
+
+初回はDocker imageの取得に時間がかかります。
+
+local stackは開発用の共通credentialを使うため、外部ネットワークへ公開しないでください。
+
+migrationからDBを作り直し、lintとpgTAPテストまで実行する場合は次のコマンドを使います。
+
+```shell
+mise run check:db
+```
+
+local stackを停止するときは次を実行します。
+
+```shell
+mise run db:stop
+```
+
+アプリケーションデータは`app` schemaに置き、Flutterから直接アクセスしません。設計と未確定事項は[`docs/database/schema.md`](docs/database/schema.md)を参照してください。
+
 ## よく使うタスク
 
 ```shell
@@ -115,9 +151,12 @@ mise run lint       # Flutter、Go、OpenAPIの静的検査
 mise run test       # FlutterとGoのテスト
 mise run build:web  # Flutter Webのリリースビルド
 mise run check      # 上記をまとめて実行
+mise run check:db   # ローカルDBの再構築、lint、テスト
 ```
 
 `mise run check`は、コード生成、フォーマット、静的検査とテスト、Webビルドの順で進みます。Webビルドを含むため数分かかることがあります。
+
+`mise run check:db`はDockerを必要とするため、通常の`mise run check`には含めていません。
 
 コード生成とフォーマットはファイルを書き換えます。実行後の差分を確認し、必要な変更をコミットしてください。
 

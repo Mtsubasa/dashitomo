@@ -6,6 +6,8 @@
 
 - セットアップ・起動: [README.md](README.md)
 - 実装方針（環境・Git・技術選定）: [docs/development-policy.md](docs/development-policy.md)
+- DB設計: [docs/database/schema.md](docs/database/schema.md)
+- 設計判断: [docs/adr/](docs/adr/)
 - エージェント向け制約: [AGENTS.md](AGENTS.md)
 
 ## 作業の前提
