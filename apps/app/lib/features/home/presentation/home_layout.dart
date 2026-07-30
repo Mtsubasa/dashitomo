@@ -62,9 +62,6 @@ abstract final class HomeLayout {
     // EXP バー: 100% 時の矩形（プレート幅・高に対する割合）。
     expBar: Rect.fromLTWH(0.421, 0.645, 0.512, 0.17),
   );
-
-  /// 画面下端とタブバーの間隔。
-  static const tabBarBottomGap = 58.0;
 }
 
 /// 親から与えられた領域を、デザイン基準幅に対するscaleへ変換する。
@@ -101,10 +98,10 @@ class HomeLayoutMetrics {
           AppBottomNavigationLayout.topInset) *
       scale;
 
-  double get bottomGap {
-    final scaled = HomeLayout.tabBarBottomGap * scale;
-    return math.min(scaled, availableSize.height * 0.08);
-  }
+  double get bottomGap => AppBottomNavigationLayout.bottomGapFor(
+    scale: scale,
+    availableHeight: availableSize.height,
+  );
 
   double get menuScale => math.max(
     scale,

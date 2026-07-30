@@ -19,6 +19,11 @@ class UnderDevelopmentScaffold extends StatelessWidget {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final width = constraints.maxWidth.clamp(0, 480).toDouble();
+                final scale = (width / AppBottomNavigationLayout.referenceWidth)
+                    .clamp(
+                      AppBottomNavigationLayout.minimumScale,
+                      AppBottomNavigationLayout.maximumScale,
+                    );
                 return Center(
                   child: SizedBox(
                     width: width,
@@ -45,8 +50,11 @@ class UnderDevelopmentScaffold extends StatelessWidget {
                           activeTab: activeTab,
                           width: width,
                         ),
-                        const SizedBox(
-                          height: AppBottomNavigationLayout.bottomGap,
+                        SizedBox(
+                          height: AppBottomNavigationLayout.bottomGapFor(
+                            scale: scale,
+                            availableHeight: constraints.maxHeight,
+                          ),
                         ),
                       ],
                     ),

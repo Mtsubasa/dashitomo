@@ -37,19 +37,21 @@ class _ZukanScreenState extends State<ZukanScreen> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final metrics = ZukanLayoutMetrics.fromConstraints(constraints);
+                final horizontalPadding = EdgeInsets.symmetric(
+                  horizontal: metrics.scaled(ZukanLayout.horizontalPadding),
+                );
                 return Center(
                   child: SizedBox(
                     width: metrics.width,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: metrics.scaled(
-                          ZukanLayout.horizontalPadding,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: horizontalPadding,
+                          child: _Header(metrics: metrics),
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          _Header(metrics: metrics),
-                          Expanded(
+                        Expanded(
+                          child: Padding(
+                            padding: horizontalPadding,
                             child: _ZukanPanel(
                               category: _category,
                               metrics: metrics,
@@ -58,22 +60,19 @@ class _ZukanScreenState extends State<ZukanScreen> {
                               },
                             ),
                           ),
-                          AppBottomNavigation(
-                            key: const ValueKey('app-bottom-navigation'),
-                            activeTab: AppTab.zukan,
-                            width:
-                                metrics.width -
-                                metrics.scaled(
-                                  ZukanLayout.horizontalPadding * 2,
-                                ),
+                        ),
+                        AppBottomNavigation(
+                          key: const ValueKey('app-bottom-navigation'),
+                          activeTab: AppTab.zukan,
+                          width: metrics.width,
+                        ),
+                        SizedBox(
+                          height: AppBottomNavigationLayout.bottomGapFor(
+                            scale: metrics.scale,
+                            availableHeight: constraints.maxHeight,
                           ),
-                          SizedBox(
-                            height: metrics.scaled(
-                              AppBottomNavigationLayout.bottomGap,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -298,6 +297,8 @@ class _CollectionGrid extends StatelessWidget {
 
   final ZukanCategory category;
 
+  static const _crossAxisCount = 3;
+
   @override
   Widget build(BuildContext context) {
     final items = switch (category) {
@@ -305,19 +306,30 @@ class _CollectionGrid extends StatelessWidget {
       ZukanCategory.title => _titleItems,
       ZukanCategory.costume => _costumeItems,
     };
-    return GridView.builder(
+    return LayoutBuilder(
       key: ValueKey('zukan-grid-${category.name}'),
-      padding: EdgeInsets.zero,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: ZukanLayout.gridGap,
-        mainAxisSpacing: ZukanLayout.gridGap,
-        childAspectRatio: ZukanLayout.cardAspectRatio,
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return _CollectionCard(item: item, category: category);
+      builder: (context, constraints) {
+        final cellWidth =
+            (constraints.maxWidth -
+                ZukanLayout.gridGap * (_crossAxisCount - 1)) /
+            _crossAxisCount;
+        final cellHeight = cellWidth / ZukanLayout.cardAspectRatio;
+        // 最大9件の固定コレクションのため、GridViewの遅延構築を避け、
+        // スクロール前でも全件が描画されるWrapで組む。
+        return SingleChildScrollView(
+          child: Wrap(
+            spacing: ZukanLayout.gridGap,
+            runSpacing: ZukanLayout.gridGap,
+            children: [
+              for (final item in items)
+                SizedBox(
+                  width: cellWidth,
+                  height: cellHeight,
+                  child: _CollectionCard(item: item, category: category),
+                ),
+            ],
+          ),
+        );
       },
     );
   }
