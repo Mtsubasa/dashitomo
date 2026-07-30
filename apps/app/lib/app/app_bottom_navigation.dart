@@ -93,7 +93,7 @@ class _BottomTabBar extends StatelessWidget {
                   _TabItem(
                     tab: AppTab.home,
                     asset: 'asset/tabs/home.png',
-                    assetScale: AppBottomNavigationLayout.paddedIconScale,
+                    assetScale: AppBottomNavigationLayout.homeIconScale,
                     isActive: activeTab == AppTab.home,
                   ),
                   _TabItem(
@@ -170,7 +170,8 @@ class _TabItem extends StatelessWidget {
         label: tab.label,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => context.go(tab.path),
+          // タブ切り替えのたびにブラウザの履歴エントリが積み上がらないようにする。
+          onTap: () => Router.neglect(context, () => context.go(tab.path)),
           child: Transform.translate(
             offset: const Offset(0, AppBottomNavigationLayout.itemOffset),
             child: Column(

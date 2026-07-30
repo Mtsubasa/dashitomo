@@ -10,6 +10,7 @@ abstract final class AppBottomNavigationLayout {
   static const bottomGap = 58.0;
   static const iconSize = 54.0;
   static const paddedIconScale = 1.5;
+  static const homeIconScale = 1.2;
   static const labelSize = 13.0;
   static const labelWidth = 64.0;
   static const labelHeight = 18.0;
