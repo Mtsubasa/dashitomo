@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../features/camera/presentation/camera_screen.dart';
 import '../features/conversation/presentation/conversation_screen.dart';
 import '../features/diary/presentation/diary_screen.dart';
+import '../features/farewell/presentation/farewell_screen.dart';
 import '../features/gacha/presentation/gacha_screen.dart';
 import '../features/health/presentation/health_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -24,6 +25,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ConversationScreen(),
       ),
       GoRoute(path: '/diary', builder: (context, state) => const DiaryScreen()),
+      GoRoute(
+        path: '/farewell',
+        builder: (context, state) => FarewellScreen(onFarewell: () {}),
+      ),
       GoRoute(path: '/gacha', builder: (context, state) => const GachaScreen()),
       GoRoute(path: '/zukan', builder: (context, state) => const ZukanScreen()),
     ],
