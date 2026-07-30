@@ -98,7 +98,7 @@ class HomeLayoutMetrics {
 
   double get bottomNavigationHeight =>
       (AppBottomNavigationLayout.barHeight +
-          AppBottomNavigationLayout.cameraBumpProtrusion) *
+          AppBottomNavigationLayout.topInset) *
       scale;
 
   double get bottomGap {

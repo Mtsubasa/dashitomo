@@ -66,7 +66,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('🌱  かつお菜図鑑  🌱'), findsOneWidget);
 
-    await tester.tap(find.text('日記'));
+    await tester.tap(find.text('カメラ'));
     await tester.pumpAndSettle();
     expect(find.text('現在開発中です'), findsOneWidget);
 

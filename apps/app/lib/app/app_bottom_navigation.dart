@@ -5,8 +5,8 @@ import 'app_bottom_navigation_layout.dart';
 
 enum AppTab {
   zukan('/zukan', '図鑑'),
-  diary('/diary', '日記'),
-  home('/home', 'カメラ'),
+  diary('/diary', 'カメラ'),
+  home('/home', 'ホーム'),
   conversation('/conversation', '会話'),
   gacha('/gacha', 'ガチャ');
 
@@ -32,7 +32,7 @@ class AppBottomNavigation extends StatelessWidget {
         width /
         AppBottomNavigationLayout.referenceWidth *
         (AppBottomNavigationLayout.barHeight +
-            AppBottomNavigationLayout.cameraBumpProtrusion);
+            AppBottomNavigationLayout.topInset);
     return SizedBox(
       width: width,
       height: height,
@@ -42,7 +42,7 @@ class AppBottomNavigation extends StatelessWidget {
           width: AppBottomNavigationLayout.referenceWidth,
           height:
               AppBottomNavigationLayout.barHeight +
-              AppBottomNavigationLayout.cameraBumpProtrusion,
+              AppBottomNavigationLayout.topInset,
           child: _BottomTabBar(activeTab: activeTab),
         ),
       ),
@@ -57,8 +57,7 @@ class _BottomTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const inset = AppBottomNavigationLayout.cameraBumpProtrusion;
-    const cameraCenterY = AppBottomNavigationLayout.cameraBumpRadius;
+    const inset = AppBottomNavigationLayout.topInset;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -72,8 +71,6 @@ class _BottomTabBar extends StatelessWidget {
             clipper: const _TabBarClipper(
               radius: AppBottomNavigationLayout.barRadius,
               topInset: inset,
-              bumpRadius: AppBottomNavigationLayout.cameraBumpRadius,
-              bumpCenterY: cameraCenterY,
             ),
             color: AppBottomNavigationLayout.barColor,
             elevation: 6,
@@ -89,10 +86,16 @@ class _BottomTabBar extends StatelessWidget {
                   ),
                   _TabItem(
                     tab: AppTab.diary,
-                    asset: 'asset/tabs/nikki.png',
+                    asset: 'asset/tabs/camera.png',
+                    assetScale: AppBottomNavigationLayout.paddedIconScale,
                     isActive: activeTab == AppTab.diary,
                   ),
-                  _CameraTabSlot(isActive: activeTab == AppTab.home),
+                  _TabItem(
+                    tab: AppTab.home,
+                    asset: 'asset/tabs/home.png',
+                    assetScale: AppBottomNavigationLayout.paddedIconScale,
+                    isActive: activeTab == AppTab.home,
+                  ),
                   _TabItem(
                     tab: AppTab.conversation,
                     asset: 'asset/tabs/kaiwa.png',
@@ -108,31 +111,16 @@ class _BottomTabBar extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          top: cameraCenterY - AppBottomNavigationLayout.cameraOrangeSize / 2,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: _CameraButton(isActive: activeTab == AppTab.home),
-          ),
-        ),
       ],
     );
   }
 }
 
 class _TabBarClipper extends CustomClipper<Path> {
-  const _TabBarClipper({
-    required this.radius,
-    required this.topInset,
-    required this.bumpRadius,
-    required this.bumpCenterY,
-  });
+  const _TabBarClipper({required this.radius, required this.topInset});
 
   final double radius;
   final double topInset;
-  final double bumpRadius;
-  final double bumpCenterY;
 
   @override
   Path getClip(Size size) {
@@ -151,22 +139,12 @@ class _TabBarClipper extends CustomClipper<Path> {
       ..lineTo(radius, size.height)
       ..quadraticBezierTo(0, size.height, 0, size.height - radius)
       ..close();
-    final bump = Path()
-      ..addOval(
-        Rect.fromCircle(
-          center: Offset(size.width / 2, bumpCenterY),
-          radius: bumpRadius,
-        ),
-      );
-    return Path.combine(PathOperation.union, bar, bump);
+    return bar;
   }
 
   @override
   bool shouldReclip(_TabBarClipper oldClipper) {
-    return oldClipper.radius != radius ||
-        oldClipper.topInset != topInset ||
-        oldClipper.bumpRadius != bumpRadius ||
-        oldClipper.bumpCenterY != bumpCenterY;
+    return oldClipper.radius != radius || oldClipper.topInset != topInset;
   }
 }
 
@@ -175,11 +153,13 @@ class _TabItem extends StatelessWidget {
     required this.tab,
     required this.asset,
     required this.isActive,
+    this.assetScale = 1,
   });
 
   final AppTab tab;
   final String asset;
   final bool isActive;
+  final double assetScale;
 
   @override
   Widget build(BuildContext context) {
@@ -196,11 +176,16 @@ class _TabItem extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  asset,
+                SizedBox(
+                  key: ValueKey('tab-icon-${tab.name}'),
                   width: AppBottomNavigationLayout.iconSize,
                   height: AppBottomNavigationLayout.iconSize,
-                  fit: BoxFit.contain,
+                  child: ClipRect(
+                    child: Transform.scale(
+                      scale: assetScale,
+                      child: Image.asset(asset, fit: BoxFit.contain),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 2),
                 SizedBox(
@@ -225,119 +210,6 @@ class _TabItem extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CameraTabSlot extends StatelessWidget {
-  const _CameraTabSlot({required this.isActive});
-
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Transform.translate(
-        offset: const Offset(0, AppBottomNavigationLayout.itemOffset),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: AppBottomNavigationLayout.iconSize),
-            const SizedBox(height: 2),
-            SizedBox(
-              width: AppBottomNavigationLayout.labelWidth,
-              height: AppBottomNavigationLayout.labelHeight,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  AppTab.home.label,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: AppBottomNavigationLayout.labelSize,
-                    color: isActive
-                        ? AppBottomNavigationLayout.activeColor
-                        : AppBottomNavigationLayout.labelColor,
-                    fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CameraButton extends StatelessWidget {
-  const _CameraButton({required this.isActive});
-
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      selected: isActive,
-      button: true,
-      label: AppTab.home.label,
-      child: GestureDetector(
-        onTap: () => context.go(AppTab.home.path),
-        child: Container(
-          width: AppBottomNavigationLayout.cameraOrangeSize,
-          height: AppBottomNavigationLayout.cameraOrangeSize,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFFFC64B), Color(0xFFF6A623)],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              const Icon(
-                Icons.camera_alt,
-                color: Colors.white,
-                size: AppBottomNavigationLayout.cameraIconSize,
-              ),
-              Container(
-                width: AppBottomNavigationLayout.cameraLensSize,
-                height: AppBottomNavigationLayout.cameraLensSize,
-                padding: const EdgeInsets.all(
-                  AppBottomNavigationLayout.cameraLensYellowWidth,
-                ),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppBottomNavigationLayout.cameraLensYellowColor,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(
-                    AppBottomNavigationLayout.cameraLensWhiteWidth,
-                  ),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: const DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppBottomNavigationLayout.cameraLensColor,
-                    ),
-                  ),
-                ),
-              ),
-            ],
           ),
         ),
       ),
