@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,21 +14,48 @@ final routerProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
     initialLocation: '/home',
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const HealthScreen()),
-      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+      GoRoute(path: '/', pageBuilder: _slidePage(const HealthScreen())),
+      GoRoute(
+        path: '/home',
+        pageBuilder: _slidePage(const HomeScreen()),
+      ),
       GoRoute(
         path: '/conversation',
-        builder: (context, state) => const ConversationScreen(),
+        pageBuilder: _slidePage(const ConversationScreen()),
       ),
-      GoRoute(path: '/diary', builder: (context, state) => const DiaryScreen()),
-      GoRoute(path: '/gacha', builder: (context, state) => const GachaScreen()),
+      GoRoute(
+        path: '/diary',
+        pageBuilder: _slidePage(const DiaryScreen()),
+      ),
+      GoRoute(
+        path: '/gacha',
+        pageBuilder: _slidePage(const GachaScreen()),
+      ),
       GoRoute(
         path: '/summon',
-        builder: (context, state) => const SummonScreen(),
+        pageBuilder: _slidePage(const SummonScreen()),
       ),
-      GoRoute(path: '/zukan', builder: (context, state) => const ZukanScreen()),
+      GoRoute(
+        path: '/zukan',
+        pageBuilder: _slidePage(const ZukanScreen()),
+      ),
     ],
   );
   ref.onDispose(router.dispose);
   return router;
 });
+
+/// 画面遷移を右から左へのスライドで統一するための[Page]ビルダー。
+Page<void> Function(BuildContext, GoRouterState) _slidePage(Widget child) {
+  return (context, state) => CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final tween = Tween(
+        begin: const Offset(1, 0),
+        end: Offset.zero,
+      ).chain(CurveTween(curve: Curves.easeInOutCubic));
+      return SlideTransition(position: animation.drive(tween), child: child);
+    },
+  );
+}
