@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  for (final tab in [AppTab.diary, AppTab.conversation, AppTab.gacha]) {
+  for (final tab in [AppTab.diary, AppTab.gacha]) {
     testWidgets('${tab.label}画面に開発中表示と下部ナビゲーションがある', (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(320, 568);
