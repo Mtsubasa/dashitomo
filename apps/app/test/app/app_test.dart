@@ -73,7 +73,7 @@ void main() {
 
     await tester.tap(find.text('会話'));
     await tester.pumpAndSettle();
-    expect(find.text('現在開発中です'), findsOneWidget);
+    expect(find.byKey(const ValueKey('conversation-screen')), findsOneWidget);
 
     await tester.tap(find.text('ガチャ'));
     await tester.pumpAndSettle();
